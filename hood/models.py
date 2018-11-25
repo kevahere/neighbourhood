@@ -1,5 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save,post_delete
+from django.dispatch import receiver
+
+
+@receiver(post_save,sender=User)
+def create_profile(sender, instance,created,**kwargs):
+   if created:
+       Profile.objects.create(user=instance)
+
+@receiver(post_save,sender=User)
+def save_profile(sender, instance,**kwargs):
+   instance.profile.save()
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -37,6 +50,7 @@ class Neighborhood(models.Model):
     name = models.CharField(max_length=250)
     location = models.CharField(max_length=250)
     occupants = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default = 1,null = True)
 
     def __str__(self):
         return self.name
@@ -63,6 +77,15 @@ class Neighborhood(models.Model):
     def search_neighbourhood(cls, search_term):
         neighbourhoods = cls.objects.filter(neighbourhood_name__icontains=search_term)
         return neighbourhoods
+
+class Post(models.Model):
+    title = models.CharField(max_length=65)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    hood = models.ForeignKey(Neighborhood, blank=True)
+    description = models.TextField(max_length=300)
+
+    def __str__(self):
+        return self.description
 
 class Business(models.Model):
     """Calss that defines the business model"""
