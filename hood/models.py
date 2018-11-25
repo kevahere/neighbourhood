@@ -32,4 +32,62 @@ class Profile(models.Model):
         to_delete = cls.objects.filter(id=id)
         to_delete.delete()
 
+class Neighborhood(models.Model):
+    """Class defining the neighborhood model"""
+    name = models.CharField(max_length=250)
+    location = models.CharField(max_length=250)
+    occupants = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    def save_neighbourhood(self):
+        self.save()
+
+    @classmethod
+    def delete_neighbourhood_by_id(cls, id):
+        neighbourhoods = cls.objects.filter(pk=id)
+        neighbourhoods.delete()
+
+    @classmethod
+    def get_neighbourhood_by_id(cls, id):
+        neighbourhoods = cls.objects.get(pk=id)
+        return neighbourhoods
+
+    @classmethod
+    def filter_by_location(cls, location):
+        neighbourhoods = cls.objects.filter(location=location)
+        return neighbourhoods
+
+    @classmethod
+    def search_neighbourhood(cls, search_term):
+        neighbourhoods = cls.objects.filter(neighbourhood_name__icontains=search_term)
+        return neighbourhoods
+
+class Business(models.Model):
+    """Calss that defines the business model"""
+    name = models.CharField(max_length=250,null=True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE, default =1)
+    email_address = models.CharField(max_length=250,blank=True,null=True)
+    neighborhood = models.ForeignKey(Neighborhood,null=True)
+
+    def __str__(self):
+        return self.name
+    def save_business(self):
+        self.save()
+    @classmethod
+    def delete_business_by_id(cls, id):
+        business = cls.objects.filter(pk=id)
+        business.delete()
+    @classmethod
+    def find_business(cls,id):
+        business = cls.oblect.get(pk=id)
+        return business
+    @classmethod
+    def update_business(cls,name,email_address,neighborhood):
+        upd8 = cls.objects.filter(user=id)
+        upd8.email_address = email_address
+        upd8.neighborhood = neighborhood
+        upd8.save()
+
 
