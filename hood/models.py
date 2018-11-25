@@ -90,4 +90,9 @@ class Business(models.Model):
         upd8.neighborhood = neighborhood
         upd8.save()
 
+class Join(models.Model):
+    user_id = models.OneToOneField(User)
+    hood_id = models.ForeignKey(Neighborhood)
 
+    def __str__(self):
+        return self.user_id
