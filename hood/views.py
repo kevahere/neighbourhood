@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Post,Profile,Neighborhood,Business,Join
 from django.http import HttpResponse
 from django.contrib import messages
-#from .forms import NewPostForm,UserForm,CreateHoodForm,ProfileForm
+from .forms import NewPostForm,UserForm,CreateHoodForm,ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 

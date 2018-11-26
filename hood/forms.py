@@ -9,19 +9,19 @@ class NewPostForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('name','user_name','bio')
+        fields = ('user','bio')
 
 class CreateHoodForm(forms.ModelForm):
     class Meta:
-        model = Neighbourhood
-        fields = ['name','location','occupants']
+        model = Neighborhood
+        fields = ['location','occupants']
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['name','bio']
+        fields = ['bio']
 
 class BusinessForm(forms.ModelForm):
     class Meta:
         model  = Business
-        fields = ['name','hood','email']
+        fields = ['neighborhood','email_address']
