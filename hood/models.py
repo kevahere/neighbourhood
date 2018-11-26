@@ -45,6 +45,8 @@ class Profile(models.Model):
         to_delete = cls.objects.filter(id=id)
         to_delete.delete()
 
+
+
 class Neighborhood(models.Model):
     """Class defining the neighborhood model"""
     name = models.CharField(max_length=250)
@@ -112,6 +114,12 @@ class Business(models.Model):
         upd8.email_address = email_address
         upd8.neighborhood = neighborhood
         upd8.save()
+
+
+    @classmethod
+    def search_by_business_name(cls,search_term):
+        businesses = cls.objects.filter(name__icontains=search_term)
+        return businesses
 
 class Join(models.Model):
     user_id = models.OneToOneField(User)

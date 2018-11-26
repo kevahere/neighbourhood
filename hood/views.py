@@ -2,16 +2,16 @@ from django.shortcuts import render,redirect
 from .models import Post,Profile,Neighborhood,Business,Join
 from django.http import HttpResponse
 from django.contrib import messages
-from .forms import NewPostForm,UserForm,CreateHoodForm,ProfileForm
+from .forms import NewPostForm,UserForm,CreateHoodForm,ProfileForm,BusinessForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
     hoods = Neighborhood.objects.all()
-    business = Business.objects.all()
+    businesses = Business.objects.all()
     posts = Post.objects.all()
-    return render(request,'index.html')
+    return render(request,'index.html',{"businesses":businesses,"posts":posts})
 
 @login_required(login_url='/accounts/login/')
 def profile(request,user_id=None):
@@ -46,7 +46,7 @@ def new_post(request):
             post = form.save(commit=False)
             post.user = current_user
             post.save()
-            return redirect('hoods')
+            return redirect('home')
     else:
         form = NewPostForm()
     return render(request, 'new_post.html', {"form":form})
@@ -68,16 +68,16 @@ def createHood(request):
 
 def search(request):
 
-    if request.GET['hoods']:
-        search_term = request.GET.get("hoods")
-        hoods = Neighborhood.search_hood(search_term)
+    if 'business' in request.GET and request.GET['business']:
+        search_term = request.GET.get("business")
+        searched_businesses = Business.search_by_business_name(search_term)
         message = f"{search_term}"
 
-        return render(request,'search.html',locals())
+        return render(request,'search.html',{"message":message, "businesses":searched_businesses})
 
     else:
         message = "You Haven't searched for any item"
-        return render(request,'search.html',locals())
+        return render(request,'search.html',{"message":message })
 
 @login_required(login_url = '/accounts/login')
 def all_hoods(request):
@@ -100,7 +100,7 @@ def all_hoods(request):
 def create_business(request):
     current_user = request.user
     print(Profile.objects.all())
-    owner = Profile.get_by_id(current_user)
+    owner = Profile.objects.get(user = current_user)
     # this_hood = Neighborhood.objects.all()
     if request.method == 'POST':
         form = BusinessForm(request.POST,request.FILES)
@@ -109,7 +109,7 @@ def create_business(request):
             new_biz.user = current_user
             # new_biz.hood =this_hood
             new_biz.save()
-            return redirect(home)
+            return redirect('home')
     else:
         form = BusinessForm()
     return render(request,"businessform.html",locals())
@@ -126,8 +126,3 @@ def join(request, hoodId):
 
     messages.success(request, 'Success! You have succesfully joined this Neighborhood ')
     return redirect('hoods')
-
-
-
-
-
